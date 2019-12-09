@@ -27,12 +27,12 @@ app.get('/test', (req, res) => {
 });
 
 app.post('/chromosome', (req, res) => {
-    const { socketId, genCollection } = req.body.params;
+    const { socketId, genCollection, width, height } = req.body.params;
     const io = req.app.get('io');
 
     const process = fork('./models/population/run_evolution.js');
 
-    process.send({ gens: genCollection, chrWidth: 2000, chrHeight: 2000 });
+    process.send({ gens: genCollection, chrWidth: width, chrHeight: height });
 
     io.sockets.connected[socketId].on('disconnect', () => {
         process.kill('SIGINT');
