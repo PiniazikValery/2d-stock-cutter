@@ -1,0 +1,13 @@
+{
+    "name": "2d-stock-cutter",
+    "version": "1.0.0",
+    "scripts": {
+        "client": "cd client && npm run start",
+        "server": "cd server && npm run start",
+        "prestart": "npm install",
+        "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+    },
+    "devDependencies": {
+        "concurrently": "^5.0.0"
+    }
+}

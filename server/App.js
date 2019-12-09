@@ -1,0 +1,49 @@
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const http = require("http");
+const config = require('config');
+const process = require('process');
+const { fork } = require('child_process');
+const socketIo = require("socket.io");
+
+const port = process.env.PORT || config.get('application_port');
+
+const app = express();
+
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const server = http.createServer(app);
+const io = socketIo(server);
+app.set('io', io);
+
+app.get('/test', (req, res) => {
+    console.log('hit');
+    res.status(200).json({
+        message: 'solution calculation has been started',
+    });
+});
+
+app.post('/chromosome', (req, res) => {
+    const { socketId, genCollection } = req.body.params;
+    const io = req.app.get('io');
+
+    const process = fork('./models/population/run_evolution.js');
+
+    process.send({ gens: genCollection, chrWidth: 2000, chrHeight: 2000 });
+
+    io.sockets.connected[socketId].on('disconnect', () => {
+        process.kill('SIGINT');
+    });
+
+    process.on('message', (result) => {
+        io.in(socketId).emit('successResult', result);
+    });
+    res.status(200).json({
+        message: 'solution calculation has been started',
+    });
+});
+
+server.listen(port); 

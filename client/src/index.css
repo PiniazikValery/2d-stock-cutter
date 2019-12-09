@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.App {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+}
+
+.App .editor {
+  width: 50%;
+  height: 99%;
+}
+
+.App .editor .rect-editor {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow: scroll;
+}
+
+.App .editor .rect-editor .field {
+  text-align: center;
+  width: 100%;
+}
+
+.App .editor .rect-editor span {
+  display: inline-block;
+  width: 50%;
+}
+
+.App .editor .rect-list {
+  overflow: scroll;
+  width: 100%;
+  height: 40%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.start-evolution {
+  height: 10%;
+  width: 100%;
+  text-align: center;
+}
+
+.start-evolution button {
+  height: 100%;
+  width: 100%;
+}
+
+.App .editor .rect-list div {
+  text-align: center;
+  height: 50px;
+  width: 100%;
+}
+
+.App .editor .rect-list div span {
+  display: inline-block;
+  width: 40%;
+}
+
+button.delete-rect {
+  align-self: flex-end;
+  margin-right: 10px;
+}
+
+.App .result_img{
+  border-color: red;
+  border-style: dashed;
+  width: 50%;
+  height: 99%;
+  position: relative;
+  overflow: scroll;
+  display: flex;
+  justify-content: center;
+}
+
+.App .result_img canvas {
+  height: 100%;
+  left: 0px;
+  position: absolute;
+}
