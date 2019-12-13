@@ -163,7 +163,9 @@ function App() {
           <br />
           <span className="info_value">Площадь всех прямоугольников: {chromosomesSquare || '-'}</span>
           <br />
-          <span className="info_value">Свободная площадь: {freeSpace || '-'}</span>
+          <span className="info_value">Общая площадь: {outerRectWidth && outerRectHeight ? outerRectHeight * outerRectWidth : '-'}</span>
+          <br />
+          <span className="info_value">Площадь остатков: {freeSpace || '-'}</span>
           <br />
           <span className="info_value">Выживаемость: {fitnessScore ? fitnessScore * 100 + '%' : '-'}</span>
           <br />
