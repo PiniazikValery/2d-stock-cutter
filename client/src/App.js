@@ -15,12 +15,38 @@ function App() {
   const [rectsList, setRectsList] = useState([]);
   const [resultIsLoading, setResultIsLoading] = useState(false);
   const [launchIsAvaliable, setLaunchIsAvaliable] = useState(false);
+  const [socketListenerIsOn, setSocketListener] = useState(false);
+  const [chromosomesSquare, setChromosomesSquare] = useState(undefined);
+  const [freeSpace, setFreeSpace] = useState(undefined);
+  const [fitnessScore, setFitnessScore] = useState(undefined);
+  const [workTime, setWorkTime] = useState(undefined);
 
   const canvasOfChromosome = useRef(null);
 
   useEffect(() => {
-    if (socket) {
+    const initCanvasOfGens = () => {
+      var ctx = canvasOfChromosome.current.getContext("2d");
+      ctx.beginPath();
+      ctx.rect(0, 0, chromosome.width, chromosome.height);
+    };
+
+    const drowGens = () => {
+      var ctx = canvasOfChromosome.current.getContext("2d");
+      chromosome.gens.forEach(gen => {
+        ctx.beginPath();
+        ctx.rect(gen.x - (gen.width / 2), gen.y - (gen.height / 2), gen.width, gen.height);
+        ctx.stroke();
+      });
+    };
+
+    if (socket && !socketListenerIsOn) {
+      setSocketListener(true);
       socket.on('successResult', result => {
+        console.log(result);
+        setWorkTime(result.info.time);
+        setChromosomesSquare(typeof result.info.chromosomeSquare === 'object' ? result.info.chromosomeSquare.width * result.info.chromosomeSquare.height : result.info.chromosomeSquare);
+        setFreeSpace(result.info.freeSpace);
+        setFitnessScore(result.info.fitness);
         setResultIsLoading(false);
         setChromosome(result);
       });
@@ -29,7 +55,7 @@ function App() {
       initCanvasOfGens();
       drowGens();
     }
-  });
+  }, [chromosome, socketListenerIsOn]);
 
   useEffect(() => {
     if (socket && rectsList.length !== 0 && outerRectWidth && outerRectHeight && !resultIsLoading) {
@@ -38,21 +64,6 @@ function App() {
       setLaunchIsAvaliable(false);
     }
   }, [rectsList.length, outerRectWidth, outerRectHeight, resultIsLoading]);
-
-  const initCanvasOfGens = () => {
-    var ctx = canvasOfChromosome.current.getContext("2d");
-    ctx.beginPath();
-    ctx.rect(0, 0, chromosome.width, chromosome.height);
-  };
-
-  const drowGens = () => {
-    var ctx = canvasOfChromosome.current.getContext("2d");
-    chromosome.gens.forEach(gen => {
-      ctx.beginPath();
-      ctx.rect(gen.x - (gen.width / 2), gen.y - (gen.height / 2), gen.width, gen.height);
-      ctx.stroke();
-    });
-  };
 
   const clearAllNewRectInputFields = () => {
     setNewRectHeight('');
@@ -78,9 +89,17 @@ function App() {
     setRectsList(rectsList.filter(rect => rect.id !== id));
   };
 
+  const cleanResults = () => {
+    setWorkTime(undefined);
+    setChromosomesSquare(undefined);
+    setFreeSpace(undefined);
+    setFitnessScore(undefined);
+  }
+
   const onStartEvolution = () => {
     setChromosome(undefined);
     setResultIsLoading(true);
+    cleanResults();
     axios.post('/chromosome', {
       params: {
         socketId: socket.id,
@@ -135,8 +154,21 @@ function App() {
           <button disabled={!launchIsAvaliable} onClick={onStartEvolution}>Пуск</button>
         </div>
       </div>
-      <div className="result_img">
-        {chromosome ? <canvas ref={canvasOfChromosome} width={chromosome.width} height={chromosome.height} /> : undefined}
+      <div className="result">
+        <div className="result_img">
+          {chromosome ? <canvas ref={canvasOfChromosome} width={chromosome.width} height={chromosome.height} /> : undefined}
+        </div>
+        <div className="result_info">
+          <span className="title">Результаты работы</span>
+          <br />
+          <span className="info_value">Площадь всех прямоугольников: {chromosomesSquare || '-'}</span>
+          <br />
+          <span className="info_value">Свободная площадь: {freeSpace || '-'}</span>
+          <br />
+          <span className="info_value">Выживаемость: {fitnessScore ? fitnessScore * 100 + '%' : '-'}</span>
+          <br />
+          <span className="info_value">Время работы алгоритма: {workTime ? workTime + 'ms' : '-'}</span>
+        </div>
       </div>
     </div>
   );

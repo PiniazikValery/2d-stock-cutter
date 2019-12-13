@@ -6,9 +6,19 @@ const runEvolution = (gens, chrWidth, chrHeight) => {
     gens.forEach(gen => {
         gensCollection.push(new Gen(+gen.width, +gen.height));
     });
+    const startAlgorithTime = new Date()
     return new Population(chrWidth, chrHeight, gensCollection)
         .startEvolution()
-        .then(result => result[result.length - 1]);
+        .then(result => {
+            const resultWithDetails = result[result.length - 1]
+            resultWithDetails.info = {
+                fitness: resultWithDetails.getFitness(),
+                chromosomeSquare: resultWithDetails.getChromosomeSquare(),
+                freeSpace: resultWithDetails.getChromosomeSquare() * (1 - resultWithDetails.getFitness()),
+                time: new Date() - startAlgorithTime
+            };
+            return resultWithDetails;
+        });
 };
 
 process.on('message', (data) => {

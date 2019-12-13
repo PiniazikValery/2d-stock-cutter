@@ -6,7 +6,7 @@ class Population {
         this.chrWidth = chrWidth;
         this.chrHeight = chrHeight;
         this.gens = gens;
-        this.populationSize = 200;
+        this.populationSize = gens.length > 2 ? 200 : 1000;
         this.chromosomes = [];
         this.initPopulation();
     }
