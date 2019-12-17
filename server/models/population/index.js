@@ -2,13 +2,30 @@ const Chromosome = require('../chromosome');
 const _ = require('lodash');
 
 class Population {
-    constructor(chrWidth, chrHeight, gens) {
-        this.chrWidth = chrWidth;
-        this.chrHeight = chrHeight;
+    constructor(gens) {
+        this.initOuterRect(gens);
         this.gens = gens;
-        this.populationSize = gens.length > 2 ? 200 : 1000;
+        this.populationSize = 200;
         this.chromosomes = [];
         this.initPopulation();
+    }
+
+    initChr(widthOrHeight, gens) {
+        if (gens.length === 1) {
+            return gens[0][widthOrHeight];
+        }
+        return gens.reduce((accumulator, currentValue) => {
+            if (typeof accumulator === 'object') {
+                return accumulator[widthOrHeight] + currentValue[widthOrHeight];
+            } else {
+                return accumulator + currentValue[widthOrHeight];
+            }
+        });
+    }
+
+    initOuterRect(gens) {
+        this.chrWidth = this.initChr('width', gens) * 0.5 + this.initChr('width', gens);
+        this.chrHeight = this.initChr('height', gens) * 0.5 + this.initChr('height', gens);
     }
 
     initPopulation() {

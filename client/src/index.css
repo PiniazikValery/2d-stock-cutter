@@ -93,7 +93,7 @@ button.delete-rect {
   position: relative;
   border-color: red;
   border-style: dashed;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .App .result_info {
@@ -114,8 +114,16 @@ button.delete-rect {
   font-weight: bold;
 }
 
+.App .result_img .canvas_wrapper {
+  position: absolute;
+  height: 90%;
+  bottom: 5%;
+  top: 5%;
+  left: 50%;
+}
+
 .App .result_img canvas {
   height: 100%;
-  left: 0px;
-  position: absolute;
+  left: -50%;
+  position: relative;
 }

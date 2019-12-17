@@ -10,7 +10,9 @@ class Chromosome extends Rectangle {
     }
 
     initGens(gens) {
-        _.cloneDeep(gens).forEach(gen => {
+        _.cloneDeep(
+            gens.sort((first, second) => second.width * second.height - first.width * first.height)
+        ).forEach(gen => {
             this.randomlyInsertGen(gen)
         });
     }
@@ -100,8 +102,6 @@ class Chromosome extends Rectangle {
         const bulgingDownGen = this.gens.sort(Gen.sortByBulgingDown).slice(-1)[0];
         const leftProtrudingGen = this.gens.sort(Gen.sortByLeftProtruding)[0];
         const rightProtrudingGen = this.gens.sort(Gen.sortByRightProtruding).slice(-1)[0];
-        const fitness = this.getFitness();
-        // console.log(fitness);
         const xStep = this.gens > 2 ? (rightProtrudingGen.r.x - bufferGen.width - leftProtrudingGen.l.x) * 0.005
             :
             (rightProtrudingGen.r.x - leftProtrudingGen.l.x) * 0.005;
@@ -147,6 +147,9 @@ class Chromosome extends Rectangle {
     }
 
     getChromosomeSquare(gens) {
+        if ((gens ? gens : this.gens).length === 1) {
+            return (gens ? gens : this.gens)[0].square;
+        }
         return (gens ? gens : this.gens).reduce((accumulator, currentValue) => {
             if (accumulator instanceof Gen) {
                 return accumulator.square + currentValue.square;

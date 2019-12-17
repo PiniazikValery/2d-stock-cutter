@@ -20,18 +20,19 @@ function App() {
   const [freeSpace, setFreeSpace] = useState(undefined);
   const [fitnessScore, setFitnessScore] = useState(undefined);
   const [workTime, setWorkTime] = useState(undefined);
+  const [drawInfo, setDrawInfo] = useState(undefined);
 
   const canvasOfChromosome = useRef(null);
 
   useEffect(() => {
     const initCanvasOfGens = () => {
-      var ctx = canvasOfChromosome.current.getContext("2d");
+      const ctx = canvasOfChromosome.current.getContext("2d");
       ctx.beginPath();
-      ctx.rect(0, 0, chromosome.width, chromosome.height);
+      ctx.rect(0, 0, drawInfo.widthToDraw, drawInfo.heightToDraw);
     };
 
     const drowGens = () => {
-      var ctx = canvasOfChromosome.current.getContext("2d");
+      const ctx = canvasOfChromosome.current.getContext("2d");
       chromosome.gens.forEach(gen => {
         ctx.beginPath();
         ctx.rect(gen.x - (gen.width / 2), gen.y - (gen.height / 2), gen.width, gen.height);
@@ -39,14 +40,23 @@ function App() {
       });
     };
 
+    const drowOuterRect = () => {
+      const ctx = canvasOfChromosome.current.getContext("2d");
+      ctx.beginPath();
+      ctx.rect(0, 0, drawInfo.outerRectWidth, drawInfo.outerRectHeight);
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+    };
+
     if (socket && !socketListenerIsOn) {
       setSocketListener(true);
       socket.on('successResult', result => {
-        console.log(result);
         setWorkTime(result.info.time);
         setChromosomesSquare(typeof result.info.chromosomeSquare === 'object' ? result.info.chromosomeSquare.width * result.info.chromosomeSquare.height : result.info.chromosomeSquare);
         setFreeSpace(result.info.freeSpace);
         setFitnessScore(result.info.fitness);
+        setDrawInfo(result.drawInfo);
         setResultIsLoading(false);
         setChromosome(result);
       });
@@ -54,8 +64,9 @@ function App() {
     if (chromosome) {
       initCanvasOfGens();
       drowGens();
+      drowOuterRect();
     }
-  }, [chromosome, socketListenerIsOn]);
+  }, [chromosome, socketListenerIsOn, drawInfo]);
 
   useEffect(() => {
     if (socket && rectsList.length !== 0 && outerRectWidth && outerRectHeight && !resultIsLoading) {
@@ -156,7 +167,11 @@ function App() {
       </div>
       <div className="result">
         <div className="result_img">
-          {chromosome ? <canvas ref={canvasOfChromosome} width={chromosome.width} height={chromosome.height} /> : undefined}
+          {chromosome ?
+            <div className="canvas_wrapper">
+              <canvas ref={canvasOfChromosome} width={drawInfo.widthToDraw} height={drawInfo.heightToDraw} />
+            </div>
+            : undefined}
         </div>
         <div className="result_info">
           <span className="title">Результаты работы</span>
