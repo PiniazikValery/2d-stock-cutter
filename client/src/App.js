@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_URL } from './config';
 import io from "socket.io-client";
 import uuidv4 from 'uuid/v4';
+import AddRectsPopup from './components/addRectsPopup';
 
 const socket = io(API_URL);
 
@@ -21,8 +22,10 @@ function App() {
   const [fitnessScore, setFitnessScore] = useState(undefined);
   const [workTime, setWorkTime] = useState(undefined);
   const [drawInfo, setDrawInfo] = useState(undefined);
+  const [popupIsOpen, setPopupIsOpen] = useState(false);
 
   const canvasOfChromosome = useRef(null);
+  const widthOfNewRectInput = useRef(null);
 
   useEffect(() => {
     const initCanvasOfGens = () => {
@@ -87,6 +90,7 @@ function App() {
       newRectsList.push({ width: newRectWidth, height: newRectHeight, id: uuidv4() });
       setRectsList(newRectsList);
       clearAllNewRectInputFields();
+      widthOfNewRectInput.current.focus();
     }
   };
 
@@ -129,26 +133,30 @@ function App() {
 
   return (
     <div className="App">
+      {popupIsOpen && <AddRectsPopup rectsList={rectsList} setRectsList={setRectsList} setIsOpen={setPopupIsOpen} typeOnlyNumbers={typeOnlyNumbers} />}
       <div className="editor">
         <div className="rect-editor">
+          <span className="title">Данные о полотне:</span>
           <div className="field">
-            <span>Ширина внешнего прямоугольника:</span>
+            <span>Ширина:</span>
             <input value={outerRectWidth} onChange={event => typeOnlyNumbers(event.target.value, setOuterRectWidth)} />
           </div>
           <div className="field">
-            <span>Высота внешнего прямоугольника:</span>
+            <span>Высота:</span>
             <input value={outerRectHeight} onChange={event => typeOnlyNumbers(event.target.value, setOuterRectHeight)} />
           </div>
+          <span className="title">Добавление прямоугольника:</span>
           <div className="field">
-            <span>Ширина прямоугольника:</span>
-            <input value={newRectWidth} onChange={event => typeOnlyNumbers(event.target.value, setNewRectWidth)} />
+            <span>Ширина:</span>
+            <input ref={widthOfNewRectInput} value={newRectWidth} onChange={event => typeOnlyNumbers(event.target.value, setNewRectWidth)} />
           </div>
           <div className="field">
-            <span>Высота прямоугольника:</span>
+            <span>Высота:</span>
             <input value={newRectHeight} onChange={event => typeOnlyNumbers(event.target.value, setNewRectHeight)} />
           </div>
-          <div>
-            <button onClick={onClickAddNewRect}>Добавить прямоугольник</button>
+          <div className="add-rect-buttons">
+            <button onClick={onClickAddNewRect}>Добавить</button>
+            <button onClick={() => setPopupIsOpen(true)}>Добавить несколько прямоугольников</button>
           </div>
         </div>
         <div className="rect-list">
