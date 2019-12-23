@@ -45,7 +45,7 @@ const displaceResultToLeftUpCorner = (chromosome) => {
 };
 
 const stabilizeResult = (result) => {
-    const xMultiplier = 1000 / result.drawInfo.widthToDraw;
+    const xMultiplier = 1000 / result.drawInfo.widthToDraw * (result.drawInfo.widthToDraw / result.drawInfo.heightToDraw);
     const yMultiplier = 1000 / result.drawInfo.heightToDraw;
     result.drawInfo = {
         outerRectHeight: result.drawInfo.outerRectHeight * yMultiplier,
