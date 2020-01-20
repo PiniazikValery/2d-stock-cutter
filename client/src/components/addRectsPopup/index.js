@@ -41,20 +41,20 @@ const AddRectsPopup = ({ rectsList, setRectsList, setIsOpen, typeOnlyNumbers }) 
         <div className="popup-layout" onClick={closePopup}>
             <div className="popup-wrapper">
                 <div className="popup" onClick={e => e.stopPropagation()}>
-                    <span className="title">Добавление прямоугольника:</span>
+                    <span className="title">Add group of rectangles:</span>
                     <div className="field">
-                        <span>Ширина:</span>
+                        <span>Width:</span>
                         <input ref={firstFocusableElement} onKeyDown={event => switchTab(event)(true)} value={newRectWidth} onChange={event => typeOnlyNumbers(event.target.value, setNewRectWidth)} />
                     </div>
                     <div className="field">
-                        <span>Высота:</span>
+                        <span>Height:</span>
                         <input value={newRectHeight} onChange={event => typeOnlyNumbers(event.target.value, setNewRectHeight)} />
                     </div>
                     <div className="field">
-                        <span>Колличество:</span>
+                        <span>Count of rectangles:</span>
                         <input value={countOfRects} onChange={event => typeOnlyNumbers(event.target.value, setCountOfRects)} />
                     </div>
-                    <button onClick={addRects} ref={lastFocusableElement} onKeyDown={event => switchTab(event)(false)}>Добавить прямоугольники</button>
+                    <button onClick={addRects} ref={lastFocusableElement} onKeyDown={event => switchTab(event)(false)}>Add rectangles</button>
                 </div>
             </div>
         </div>

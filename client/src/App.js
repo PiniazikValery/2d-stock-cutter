@@ -136,41 +136,41 @@ function App() {
       {popupIsOpen && <AddRectsPopup rectsList={rectsList} setRectsList={setRectsList} setIsOpen={setPopupIsOpen} typeOnlyNumbers={typeOnlyNumbers} />}
       <div className="editor">
         <div className="rect-editor">
-          <span className="title">Данные о полотне:</span>
+          <span className="title">Stock parameters:</span>
           <div className="field">
-            <span>Ширина:</span>
+            <span>Width:</span>
             <input value={outerRectWidth} onChange={event => typeOnlyNumbers(event.target.value, setOuterRectWidth)} />
           </div>
           <div className="field">
-            <span>Высота:</span>
+            <span>Height:</span>
             <input value={outerRectHeight} onChange={event => typeOnlyNumbers(event.target.value, setOuterRectHeight)} />
           </div>
-          <span className="title">Добавление прямоугольника:</span>
+          <span className="title">Add rectangle:</span>
           <div className="field">
-            <span>Ширина:</span>
+            <span>Width:</span>
             <input ref={widthOfNewRectInput} value={newRectWidth} onChange={event => typeOnlyNumbers(event.target.value, setNewRectWidth)} />
           </div>
           <div className="field">
-            <span>Высота:</span>
+            <span>Height:</span>
             <input value={newRectHeight} onChange={event => typeOnlyNumbers(event.target.value, setNewRectHeight)} />
           </div>
           <div className="add-rect-buttons">
-            <button onClick={onClickAddNewRect}>Добавить</button>
-            <button onClick={() => setPopupIsOpen(true)}>Добавить несколько прямоугольников</button>
+            <button onClick={onClickAddNewRect}>Add</button>
+            <button onClick={() => setPopupIsOpen(true)}>Add group of rectangles</button>
           </div>
         </div>
         <div className="rect-list">
           {rectsList.map((rect) => {
             return (
               <div key={rect.id}>
-                <button onClick={() => onDeleteRect(rect.id)} className="delete-rect">Удалить</button>
+                <button onClick={() => onDeleteRect(rect.id)} className="delete-rect">Delete</button>
                 <span>{rect.width} x {rect.height}</span>
               </div>
             );
           })}
         </div>
         <div className="start-evolution">
-          <button disabled={!launchIsAvaliable} onClick={onStartEvolution}>Пуск</button>
+          <button disabled={!launchIsAvaliable} onClick={onStartEvolution}>Launch algorithm</button>
         </div>
       </div>
       <div className="result">
@@ -182,17 +182,17 @@ function App() {
             : undefined}
         </div>
         <div className="result_info">
-          <span className="title">Результаты работы</span>
+          <span className="title">Algorithm results</span>
           <br />
-          <span className="info_value">Площадь всех прямоугольников: {chromosomesSquare || '-'}</span>
+          <span className="info_value">Square of all rectangles: {chromosomesSquare || '-'}</span>
           <br />
-          <span className="info_value">Общая площадь: {outerRectWidth && outerRectHeight ? outerRectHeight * outerRectWidth : '-'}</span>
+          <span className="info_value">All square: {outerRectWidth && outerRectHeight ? outerRectHeight * outerRectWidth : '-'}</span>
           <br />
-          <span className="info_value">Площадь остатков: {freeSpace || '-'}</span>
+          <span className="info_value">Square of the left space: {freeSpace || '-'}</span>
           <br />
-          <span className="info_value">Выживаемость: {fitnessScore ? fitnessScore * 100 + '%' : '-'}</span>
+          <span className="info_value">Survival: {fitnessScore ? fitnessScore * 100 + '%' : '-'}</span>
           <br />
-          <span className="info_value">Время работы алгоритма: {workTime ? workTime + 'ms' : '-'}</span>
+          <span className="info_value">Algorithms work time: {workTime ? workTime + 'ms' : '-'}</span>
         </div>
       </div>
     </div>
