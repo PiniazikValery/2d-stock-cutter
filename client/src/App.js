@@ -4,8 +4,14 @@ import { API_URL } from './config';
 import io from "socket.io-client";
 import uuidv4 from 'uuid/v4';
 import AddRectsPopup from './components/addRectsPopup';
+import ReactGA from 'react-ga';
 
 const socket = io(API_URL);
+
+function initReactGA() {
+  ReactGA.initialize('UA-156682948-2');
+  ReactGA.pageview('/homepage');
+}
 
 function App() {
   const [chromosome, setChromosome] = useState(undefined);
@@ -133,6 +139,7 @@ function App() {
 
   return (
     <div className="App">
+      {initReactGA()}
       {popupIsOpen && <AddRectsPopup rectsList={rectsList} setRectsList={setRectsList} setIsOpen={setPopupIsOpen} typeOnlyNumbers={typeOnlyNumbers} />}
       <div className="editor">
         <div className="rect-editor">
