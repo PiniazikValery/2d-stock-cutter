@@ -4,8 +4,10 @@ const Rectangle = require('../rectangle');
 const workaroundStrategies = require('./crossover_strategies');
 
 class Chromosome extends Rectangle {
-    constructor(width, height) {
+    constructor(width, height, rootOuterWidth, rootOuterHeight) {
         super(width, height);
+        this.rootOuterWidth = rootOuterWidth;
+        this.rootOuterHeight = rootOuterHeight;
         this.gens = [];
     }
 
@@ -102,15 +104,17 @@ class Chromosome extends Rectangle {
         const bulgingDownGen = this.gens.sort(Gen.sortByBulgingDown).slice(-1)[0];
         const leftProtrudingGen = this.gens.sort(Gen.sortByLeftProtruding)[0];
         const rightProtrudingGen = this.gens.sort(Gen.sortByRightProtruding).slice(-1)[0];
-        const xStep = this.gens > 2 ? (rightProtrudingGen.r.x - bufferGen.width - leftProtrudingGen.l.x) * 0.005
+        const widthDiff = this.rootOuterWidth - Math.abs(leftProtrudingGen.l.x - rightProtrudingGen.r.x);
+        const heightDiff = this.rootOuterHeight - Math.abs(bulgingUpGen.l.y - bulgingDownGen.r.y);
+        const xStep = this.gens > 2 ? (rightProtrudingGen.r.x - bufferGen.width - leftProtrudingGen.l.x + widthDiff) * 0.005
             :
-            (rightProtrudingGen.r.x - leftProtrudingGen.l.x) * 0.005;
-        const yStep = this.gens > 2 ? (bulgingDownGen.r.y - bufferGen.height - bulgingUpGen.l.y) * 0.005
+            (rightProtrudingGen.r.x - leftProtrudingGen.l.x + widthDiff) * 0.005;
+        const yStep = this.gens > 2 ? (bulgingDownGen.r.y - bufferGen.height - bulgingUpGen.l.y + heightDiff) * 0.005
             :
-            (bulgingDownGen.r.y - bulgingUpGen.l.y) * 0.005;
+            (bulgingDownGen.r.y - bulgingUpGen.l.y + heightDiff) * 0.005;
         let counter = 0;
-        for (let x = leftProtrudingGen.l.x; x < rightProtrudingGen.r.x - bufferGen.width; x += xStep) {
-            for (let y = bulgingUpGen.l.y; y < bulgingDownGen.r.y - bufferGen.height; y += yStep) {
+        for (let x = leftProtrudingGen.l.x; x < rightProtrudingGen.r.x - bufferGen.width + widthDiff; x += xStep) {
+            for (let y = bulgingUpGen.l.y; y < bulgingDownGen.r.y - bufferGen.height + heightDiff; y += yStep) {
                 bufferGen.setCoords(x + (bufferGen.width / 2), y + (bufferGen.height / 2));
                 if (currentChromosome.genIsSuitable(bufferGen)) {
                     counter++;

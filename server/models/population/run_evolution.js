@@ -1,5 +1,6 @@
 const Population = require('./index');
 const Gen = require('../gen');
+const Chromosome = require('../chromosome');
 
 const runEvolution = (gens, chrWidth, chrHeight) => {
     const gensCollection = [];
@@ -7,10 +8,10 @@ const runEvolution = (gens, chrWidth, chrHeight) => {
         gensCollection.push(new Gen(+gen.width, +gen.height));
     });
     const startAlgorithTime = new Date()
-    return new Population(gensCollection)
+    return new Population(gensCollection, chrWidth, chrHeight)
         .startEvolution()
         .then(result => {
-            const resultWithDetails = displaceResultToLeftUpCorner(result[result.length - 1]);
+            const resultWithDetails = displaceResultToLeftUpCorner(result.sort(Chromosome.sortByFitness)[result.length - 1]);
             resultWithDetails.drawInfo = {
                 outerRectHeight: chrHeight,
                 outerRectWidth: chrWidth,

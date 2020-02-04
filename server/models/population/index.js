@@ -2,9 +2,11 @@ const Chromosome = require('../chromosome');
 const _ = require('lodash');
 
 class Population {
-    constructor(gens) {
+    constructor(gens, rootOuterWidth, rootOuterHeight) {
         this.initOuterRect(gens);
         this.gens = gens;
+        this.rootOuterWidth = rootOuterWidth;
+        this.rootOuterHeight = rootOuterHeight;
         this.populationSize = 200;
         this.chromosomes = [];
         this.initPopulation();
@@ -30,7 +32,7 @@ class Population {
 
     initPopulation() {
         for (let i = 1; i <= this.populationSize; i++) {
-            let newChromosome = new Chromosome(this.chrWidth, this.chrHeight);
+            let newChromosome = new Chromosome(this.chrWidth, this.chrHeight, this.rootOuterWidth, this.rootOuterHeight);
             newChromosome.initGens(this.gens);
             this.chromosomes.push(newChromosome);
         }
@@ -53,9 +55,11 @@ class Population {
             while (isEvolving) {
                 newChromosomes = await this.generateNewChromosomes();
                 if (this.getPopulationFitness() < this.getPopulationFitness(newChromosomes)) {
+                    console.log(newChromosomes.sort(Chromosome.sortByFitness)[newChromosomes.length - 1].getFitness());
                     this.chromosomes = _.cloneDeep(newChromosomes);
                 } else {
-                    isEvolving = false;
+                    if (newChromosomes.sort(Chromosome.sortByFitness)[newChromosomes.length - 1].getFitness() > 0.80)
+                        isEvolving = false;
                 }
             }
             resolve(newChromosomes);
